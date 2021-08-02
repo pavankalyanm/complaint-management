@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sjcehostelredressal/utils/Constants.dart';
+import 'package:complaint_manager/utils/Constants.dart';
 
-class CommonData{
+class CommonData {
 //  static saveLoginData(Map user) async {
 //    SharedPreferences Loginprefs = await SharedPreferences.getInstance();
 //    Loginprefs.setBool(Constants.isLoggedIn, true);
@@ -18,18 +18,16 @@ class CommonData{
 //    Loginprefs.setString(Constants.loggedInUserRoom, user['userRoom']);
 //  }
 
-static void clearLoggedInUserData() async {
-  SharedPreferences removePrefs = await SharedPreferences.getInstance();
+  static void clearLoggedInUserData() async {
+    SharedPreferences removePrefs = await SharedPreferences.getInstance();
 
-  removePrefs.setBool(Constants.isLoggedIn, false);
-  removePrefs.setBool(Constants.isLoggedOut, true);
+    removePrefs.setBool(Constants.isLoggedIn, false);
+    removePrefs.setBool(Constants.isLoggedOut, true);
 
-  removePrefs.remove(Constants.loggedInUserMobile);
-  removePrefs.remove(Constants.loggedInUserName);
-  removePrefs.remove(Constants.loggedInUserBlock);
-  removePrefs.remove(Constants.loggedInUserRoom);
-  removePrefs.remove(Constants.loggedInUserRole);
-
-}
-
+    removePrefs.remove(Constants.loggedInUserMobile);
+    removePrefs.remove(Constants.loggedInUserName);
+    removePrefs.remove(Constants.loggedInUserBlock);
+    removePrefs.remove(Constants.loggedInUserRoom);
+    removePrefs.remove(Constants.loggedInUserRole);
+  }
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:complaint_manager/ui/UserDashboard.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +12,46 @@ import 'package:complaint_manager/utils/Constants.dart';
 //test
 final FirebaseDatabase database = FirebaseDatabase.instance;
 
-class MyForm extends StatefulWidget {
+class feedForm extends StatefulWidget {
   @override
-  _MyFormState createState() => _MyFormState();
+  _feedFormState createState() => _feedFormState();
 }
 
-class _MyFormState extends State<MyForm> {
+class _feedFormState extends State<feedForm> {
+
+
+
+
+  void _showDialog(BuildContext pageContext) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Feedback submitted"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+
+
+            new FlatButton(
+              child: new Text("Ok"),
+              onPressed: () async {
+
+
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => UserDashboard()));
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
   File sampleImage;
   String filename;
   String random;
@@ -52,9 +87,9 @@ class _MyFormState extends State<MyForm> {
   ];
   final List<DropdownMenuItem<String>> _dropDownMenuItems = typeItems
       .map((String value) => DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          ))
+    value: value,
+    child: Text(value),
+  ))
       .toList();
   String dropDownValue = "General";
 
@@ -81,7 +116,7 @@ class _MyFormState extends State<MyForm> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xff028090),
-        title: Text('Create Complaint'),
+        title: Text('Give feedback'),
       ),
       body: ModalProgressHUD(
         inAsyncCall: saving,
@@ -95,7 +130,7 @@ class _MyFormState extends State<MyForm> {
 //            ),
               Padding(
                 padding: const EdgeInsets.only(top: 14.0, bottom: 6),
-                child: Text('Enter details', style: textStyle),
+                child: Text('Enter feedback', style: textStyle),
               ),
               TextField(
                 maxLines: 3,
@@ -122,26 +157,7 @@ class _MyFormState extends State<MyForm> {
 //              keyboardType: TextInputType.number,
 //              decoration: InputDecoration(prefixText: '+91-',),
 //            ),
-              Padding(
-                padding: const EdgeInsets.only(top: 14.0, bottom: 6),
-                child: Text('Select Category', style: textStyle),
-              ),
-              DropdownButton(
-                isExpanded: true,
-                items: this._dropDownMenuItems,
-                onChanged: (String newValue) {
-                  setState(() {
-                    dropDownValue = newValue;
-                  });
-                },
-                value: dropDownValue,
-              ),
-              RaisedButton(
-                onPressed: getImage,
-                child: sampleImage == null
-                    ? Text('Pick an image')
-                    : uploadPicture(),
-              ),
+
               RaisedButton(
                 color: Color(0xff028090),
                 child: Text(
@@ -149,35 +165,7 @@ class _MyFormState extends State<MyForm> {
                   style: TextStyle(color: Colors.white, fontSize: 17),
                 ),
                 onPressed: () async {
-                  print('$database');
-                  saving = true;
-                  setState(() {
-                    validateName = nameController.text.isEmpty ? false : true;
-                    validateDetail = infoController.text.isEmpty ? true : false;
-                    validateNumber =
-                        phoneController.text.isEmpty ? false : true;
-                  });
-                  random = randomAlphaNumeric(6);
-
-                  var url = await uploadImage();
-
-                  Map data = {
-                    "name": "$_name",
-                    "detail": "${infoController.text.trim()}",
-                    "phone": "$_mobile",
-                    "url": "${url.toString()}",
-                    "id": "${random}",
-                    "category": "${dropDownValue}",
-                    "block": "$_block",
-                    "room": "$_room",
-                    "status": "Pending"
-                  };
-                  if (!validateDetail)
-                    database
-                        .reference()
-                        .child("hostel/" + dropDownValue + '/' + random)
-                        .set(data);
-                  Navigator.pop(context);
+                  _showDialog(context);
                 },
               ),
             ],
@@ -211,7 +199,7 @@ class _MyFormState extends State<MyForm> {
   Future<String> uploadImage() async {
     // print('\n\n$filename\n\n');
     final StorageReference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('$random');
+    FirebaseStorage.instance.ref().child('$random');
     final StorageUploadTask task = firebaseStorageRef.putFile(sampleImage);
     var downUrl = await (await task.onComplete).ref.getDownloadURL();
     url = downUrl.toString();

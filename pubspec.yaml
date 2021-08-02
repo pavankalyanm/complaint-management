@@ -1,4 +1,4 @@
-name: sjcehostelredressal
+name: complaint_manager
 description: A new Flutter application.
 
 # The following defines the version and build number for your application.
@@ -34,13 +34,22 @@ dependencies:
   random_string: ^1.1.0
   shimmer: ^1.0.1
   toast: ^0.1.5
+  expansion_tile_card: ^1.1.0
   modal_progress_hud: ^0.1.3
+
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.9.1
+
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.jpg"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -60,6 +69,9 @@ flutter:
     - assets/image_02.png
     - assets/logo.png
     - assets/apppicedit.jpg
+    - assets/logo.jpg
+    - assets/faq.jpg
+    - assets/profile.jpg
   #  - images/a_dot_ham.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see

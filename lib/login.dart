@@ -3,12 +3,12 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:sjcehostelredressal/signup.dart';
+import 'package:complaint_manager/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sjcehostelredressal/ui/AdminDashboard.dart';
+import 'package:complaint_manager/ui/AdminDashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sjcehostelredressal/ui/UserDashboard.dart';
-import 'package:sjcehostelredressal/utils/Constants.dart';
+import 'package:complaint_manager/ui/UserDashboard.dart';
+import 'package:complaint_manager/utils/Constants.dart';
 import 'package:toast/toast.dart';
 
 class Login extends StatefulWidget {
@@ -19,7 +19,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool validateEmail = false;
   bool validatePassword = false;
-  String name, usn, role, mobile, block, room;
+  String name, usn, role, mobile, block, room ;
+
   bool _isSelected = false;
 
   void _radio() {
@@ -77,8 +78,9 @@ class _LoginState extends State<Login> {
         ) ??
         false;
   }
+
   bool _saving = false;
-  bool isLoading=true;
+  bool isLoading = true;
   @override
   Widget build(BuildContext context) {
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
@@ -91,11 +93,10 @@ class _LoginState extends State<Login> {
         onWillPop: () => _onWillPop(),
         child: Scaffold(
           backgroundColor: Colors.white,
-         // resizeToAvoidBottomPadding: true,
+          // resizeToAvoidBottomPadding: true,
           body: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-
               SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 40.0),
@@ -114,16 +115,7 @@ class _LoginState extends State<Login> {
                               SizedBox(
                                 width: 12.0,
                               ),
-                              GestureDetector(
-                                onTap: _radio,
-                                child: radioButton(_isSelected),
-                              ),
-                              SizedBox(
-                                width: 8.0,
-                              ),
-                              Text("Remember me",
-                                  style: TextStyle(
-                                      fontSize: 12, fontFamily: "Poppins-Medium"))
+
                             ],
                           ),
                           InkWell(
@@ -138,7 +130,8 @@ class _LoginState extends State<Login> {
                                   borderRadius: BorderRadius.circular(6.0),
                                   boxShadow: [
                                     BoxShadow(
-                                        color: Color(0xFF6078ea).withOpacity(.3),
+                                        color:
+                                            Color(0xFF6078ea).withOpacity(.3),
                                         offset: Offset(0.0, 8.0),
                                         blurRadius: 8.0)
                                   ]),
@@ -155,9 +148,9 @@ class _LoginState extends State<Login> {
                                           : validatePassword = false;
                                     });
                                     if (!validateEmail && !validatePassword) {
-                                     //isLoading==false? CircularProgressIndicator(),signIn():
-                                      _saving=true;
-                                       signIn();
+                                      //isLoading==false? CircularProgressIndicator(),signIn():
+                                      _saving = true;
+                                      signIn();
                                     }
                                   },
                                   child: Center(
@@ -241,6 +234,7 @@ class _LoginState extends State<Login> {
         block = DocumentSnapshot.data['block'];
         room = DocumentSnapshot.data['room'];
         mobile = DocumentSnapshot.data['mobile'];
+
         print("name : $name");
         final prefs = await SharedPreferences.getInstance();
 
@@ -249,11 +243,13 @@ class _LoginState extends State<Login> {
         prefs.setString(Constants.loggedInUserRoom, room);
         prefs.setString(Constants.loggedInUserMobile, mobile);
         prefs.setString(Constants.loggedInUserName, name);
+        prefs.setString(Constants.loggedInUserMail, emailController.text);
+        prefs.setString(Constants.loggedInUserUsn, usn);
         prefs.setString(Constants.isLoggedIn, 'true');
         //  print("Constants name : ${Constants.loggedInUserMobile}");
         print(DocumentSnapshot.data.toString());
       });
-      _saving=false;
+      _saving = false;
       if (role == "student")
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => UserDashboard()));
@@ -263,9 +259,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       print(e.message);
       _saving = false;
-      setState(() {
-
-      });
+      setState(() {});
       Toast.show(e.message, context,
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     }
@@ -351,7 +345,7 @@ class _LoginState extends State<Login> {
                 obscureText: true,
                 decoration: InputDecoration(
                     errorText:
-                    validatePassword ? "Password can\'t be empty" : null,
+                        validatePassword ? "Password can\'t be empty" : null,
                     hintText: "Password",
                     hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
               ),
@@ -359,7 +353,7 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: ScreenUtil.getInstance().setHeight(40),
             ),
-            Row(
+           /* Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 Text(
@@ -370,7 +364,7 @@ class _LoginState extends State<Login> {
                       fontSize: ScreenUtil.getInstance().setSp(28)),
                 )
               ],
-            )
+            )*/
           ],
         ),
       ),

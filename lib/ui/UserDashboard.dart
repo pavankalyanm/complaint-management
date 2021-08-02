@@ -1,15 +1,17 @@
 import 'dart:io';
 
+import 'package:complaint_manager/ui/faq.dart';
+import 'package:complaint_manager/ui/profile.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:sjcehostelredressal/login.dart';
-import 'package:sjcehostelredressal/model/complaints.dart';
-import 'package:sjcehostelredressal/ui/ComplaintDetails.dart';
-import 'package:sjcehostelredressal/ui/form.dart';
-import 'package:sjcehostelredressal/utils/CommonData.dart';
+import 'package:complaint_manager/login.dart';
+import 'package:complaint_manager/model/complaints.dart';
+import 'package:complaint_manager/ui/ComplaintDetails.dart';
+import 'package:complaint_manager/ui/form.dart';
+import 'package:complaint_manager/utils/CommonData.dart';
 
 class UserDashboard extends StatefulWidget {
   @override
@@ -26,6 +28,43 @@ class _UserDashboardState extends State<UserDashboard>
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   DatabaseReference databaseReference;
   TabController tabBarController;
+
+
+  void _showDialog(BuildContext pageContext) {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Do you want to log out?"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+
+            new FlatButton(
+              child: new Text("No"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              child: new Text("Yes"),
+              onPressed: () async {
+
+                CommonData.clearLoggedInUserData();
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => Login()));
+
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
   Future<bool> _onWillPop() {
     return showDialog(
           context: context,
@@ -90,9 +129,7 @@ class _UserDashboardState extends State<UserDashboard>
                 color: Colors.white,
               ),
               onTap: () {
-                CommonData.clearLoggedInUserData();
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Login()));
+                _showDialog(context);
               },
             )
           ],
@@ -164,14 +201,21 @@ class _UserDashboardState extends State<UserDashboard>
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               IconButton(
-                icon: Icon(Icons.person),
+                icon: Image.asset('assets/profile.jpg'),
                 color: Colors.white,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => Profile()));
+                },
               ),
               IconButton(
-                icon: Icon(Icons.search),
+                  icon: Image.asset('assets/faq.jpg'),
                 color: Colors.white,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => faq()));
+
+                },
               ),
             ],
           ),
@@ -493,10 +537,10 @@ class _DemoBottomAppBar extends StatelessWidget {
 /*
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:sjcehostelredressal/model/complaints.dart';
-import 'package:sjcehostelredressal/ui/ComplaintDetails.dart';
-import 'package:sjcehostelredressal/ui/admin.dart';
-import 'package:sjcehostelredressal/ui/form.dart';
+import 'package:complaint_manager/model/complaints.dart';
+import 'package:complaint_manager/ui/ComplaintDetails.dart';
+import 'package:complaint_manager/ui/admin.dart';
+import 'package:complaint_manager/ui/form.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 
 class Dashboard extends StatefulWidget {

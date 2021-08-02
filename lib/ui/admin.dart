@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:sjcehostelredressal/model/complaints.dart';
-import 'package:sjcehostelredressal/ui/form.dart';
+import 'package:complaint_manager/model/complaints.dart';
+import 'package:complaint_manager/ui/form.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 
 class AdminDashboard extends StatefulWidget {

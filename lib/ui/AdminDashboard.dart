@@ -5,10 +5,10 @@ import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:sjcehostelredressal/login.dart';
-import 'package:sjcehostelredressal/model/complaints.dart';
-import 'package:sjcehostelredressal/ui/ComplaintDetails.dart';
-import 'package:sjcehostelredressal/utils/CommonData.dart';
+import 'package:complaint_manager/login.dart';
+import 'package:complaint_manager/model/complaints.dart';
+import 'package:complaint_manager/ui/ComplaintDetails.dart';
+import 'package:complaint_manager/utils/CommonData.dart';
 
 class AdminDashboard extends StatefulWidget {
   int loginTypeFlag;
@@ -207,7 +207,7 @@ class _AdminDashboardState extends State<AdminDashboard>
           actions: <Widget>[
             GestureDetector(
               child: Icon(
-                Icons.send,
+                Icons.logout,
                 color: Colors.white,
               ),
               onTap: () {

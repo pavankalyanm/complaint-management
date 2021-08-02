@@ -1,3 +1,4 @@
+import 'package:complaint_manager/utils/Constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,13 +6,22 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:complaint_manager/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:toast/toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:complaint_manager/utils/globals.dart' as globals;
 
-class SignUp extends StatefulWidget {
+class Profile extends StatefulWidget {
   @override
-  _SignUpState createState() => _SignUpState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _SignUpState extends State<SignUp> {
+class _ProfileState extends State<Profile> {
+  void initState() {
+    //super.initState();
+    // CommonData.clearLoggedInUserData();
+    shared();
+  }
+
+
   bool _saving = false;
   Map data;
   bool validateName = false;
@@ -21,72 +31,70 @@ class _SignUpState extends State<SignUp> {
   bool validateBlock = false;
   bool validateRoom = false;
   bool validateMobile = false;
+  String _name, _mobile, _block, _room;
 
-  TextEditingController emailController = TextEditingController();
+
+  TextEditingController emailController = TextEditingController(text: '${globals.mail}');
 
   TextEditingController passwordController = TextEditingController();
 
-  TextEditingController nameController = TextEditingController();
+  TextEditingController nameController = TextEditingController(text:'${globals.name}');
 
-  TextEditingController usnController = TextEditingController();
+  TextEditingController usnController = TextEditingController(text: '${globals.usn}');
 
-  TextEditingController blockController = TextEditingController();
+  TextEditingController blockController = TextEditingController(text:'${globals.block}');
 
-  TextEditingController roomController = TextEditingController();
+  TextEditingController roomController = TextEditingController(text:'${globals.room}');
 
-  TextEditingController mobileController = TextEditingController();
+  TextEditingController mobileController = TextEditingController(text:'${globals.mobile}');
 
   @override
   Widget build(BuildContext context) {
-    Future<void> signUp() async {
-      try {
-        AuthResult result = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
-        FirebaseUser user = result.user;
 
-        Firestore.instance
-            .collection("users")
-            .document((emailController.text))
-            .setData({
-          "name": "${nameController.text}",
-          "usn": "${usnController.text}",
-          "block": "${blockController.text}",
-          "room": "${roomController.text}",
-          "mobile": "${mobileController.text}",
-          "role": "student"
-        });
 
-        print(user);
 
-//        StreamBuilder<DocumentSnapshot>(
-//          stream: Firestore.instance.collection('users').document(user.uid).setData(data),
-//          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot){
-//            if(snapshot.hasError){
-//              return Text('Error: ${snapshot.error}');
-//      }
-//            switch(snapshot.connectionState){
-//              case ConnectionState.waiting: return Text('Loading');
-//              default:
-//                return Text(snapshot.data['name']);
-//      }
-//      },
-//        )
 
-//        final FirebaseUser user = (await FirebaseAuth.instance
-//            .createUserWithEmailAndPassword(
-//            email: emailController.text,
-//            password: passwordController.text)).user;
-        user.sendEmailVerification();
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => Login()));
-      } catch (e) {
-        _saving = false;
-        setState(() {});
-        print(e.message);
-        Toast.show(e.message, context,
-            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-      }
+
+    void _showDialog() {
+      // flutter defined function
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object of type Dialog
+          return AlertDialog(
+            title: new Text("updated"),
+            actions: <Widget>[
+              // usually buttons at the bottom of the dialog
+              new FlatButton(
+                child: new Text("ok"),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                },
+              ),
+
+            ],
+          );
+        },
+      );
+    }
+
+
+    Future<void> update()async{
+      _saving = true;
+
+      DocumentReference reference= Firestore.instance
+          .collection('users')
+          .document('${globals.mail}');
+      Map<String ,dynamic> data={
+        "name":'${nameController.text}',
+        "block":'${blockController.text}',
+        "room":'${roomController.text}',
+        "mobile":'${mobileController.text}',
+
+      };
+      await reference.updateData(data);
+      _saving=false;
+
     }
 
     return Scaffold(
@@ -113,7 +121,7 @@ class _SignUpState extends State<SignUp> {
             child: ListView(
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text("SignUp",
+                Text("Profile",
                     style: TextStyle(
                         fontSize: ScreenUtil.getInstance().setSp(45),
                         fontFamily: "Poppins-Bold",
@@ -126,6 +134,7 @@ class _SignUpState extends State<SignUp> {
                         fontFamily: "Poppins-Medium",
                         fontSize: ScreenUtil.getInstance().setSp(26))),
                 TextField(
+
                   onChanged: (value) {
                     setState(() {
                       value.isEmpty
@@ -133,10 +142,13 @@ class _SignUpState extends State<SignUp> {
                           : validateName = false;
                     });
                   },
+
                   controller: nameController,
+
                   decoration: InputDecoration(
                       errorText: validateName ? "Name can\'t be empty" : null,
-                      hintText: "Name",
+
+
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
                 ),
                 SizedBox(
@@ -147,6 +159,7 @@ class _SignUpState extends State<SignUp> {
                         fontFamily: "Poppins-Medium",
                         fontSize: ScreenUtil.getInstance().setSp(26))),
                 TextField(
+                  enabled: false,
                   onChanged: (value) {
                     setState(() {
                       value.isEmpty ? validateUSN = true : validateUSN = false;
@@ -221,7 +234,7 @@ class _SignUpState extends State<SignUp> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       errorText:
-                          validateMobile ? "Mobile can\'t be empty" : null,
+                      validateMobile ? "Mobile can\'t be empty" : null,
                       hintText: "Mobile",
                       prefixText: '+91-',
                       hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
@@ -234,6 +247,7 @@ class _SignUpState extends State<SignUp> {
                         fontFamily: "Poppins-Medium",
                         fontSize: ScreenUtil.getInstance().setSp(26))),
                 TextField(
+                  enabled: false,
                   keyboardType: TextInputType.emailAddress,
                   controller: emailController,
                   onChanged: (value) {
@@ -251,26 +265,8 @@ class _SignUpState extends State<SignUp> {
                 SizedBox(
                   height: ScreenUtil.getInstance().setHeight(35),
                 ),
-                Text("Password",
-                    style: TextStyle(
-                        fontFamily: "Poppins-Medium",
-                        fontSize: ScreenUtil.getInstance().setSp(26))),
-                TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      value.isEmpty
-                          ? validatePassword = true
-                          : validatePassword = false;
-                    });
-                  },
-                  obscureText: true,
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                      errorText:
-                          validatePassword ? "Password can\'t be empty" : null,
-                      hintText: "Password",
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
-                ),
+
+
                 SizedBox(
                   height: ScreenUtil.getInstance().setHeight(35),
                 ),
@@ -332,12 +328,12 @@ class _SignUpState extends State<SignUp> {
                                 validatePassword &&
                                 validateEmail &&
                                 validateUSN)) {
-                              _saving = true;
-                              signUp();
+
+                              update();
                             }
                           },
                           child: Center(
-                            child: Text("SignUp",
+                            child: Text("EDIT",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: "Poppins-bold",
@@ -356,4 +352,20 @@ class _SignUpState extends State<SignUp> {
       ),
     );
   }
+
+ shared() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      globals.name = (prefs.getString(Constants.loggedInUserName));
+      globals.mobile = (prefs.getString(Constants.loggedInUserMobile));
+      globals.block = (prefs.getString(Constants.loggedInUserBlock));
+      globals.room = (prefs.getString(Constants.loggedInUserRoom));
+      globals.mail=(prefs.getString(Constants.loggedInUserMail));
+      globals.usn=(prefs.getString(Constants.loggedInUserUsn));
+    });
+
+  }
+
+
+
 }

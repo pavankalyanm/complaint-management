@@ -1,3 +1,5 @@
+import 'package:complaint_manager/ui/feedback.dart';
+import 'package:complaint_manager/ui/form.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -28,12 +30,15 @@ class _ComplaintDetailsState extends State<ComplaintDetails> {
   String statusChange;
   String pText = "Pending";
   String dText = "Done";
+  bool isfeed=false;
+
 
   void initState() {
     //super.initState();
     if (this.widget.status == "Done") {
       val = true;
       statusChange = dText;
+
     } else {
       val = false;
       statusChange = pText;
@@ -67,7 +72,7 @@ class _ComplaintDetailsState extends State<ComplaintDetails> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(height: 400,
-                         width: 400,
+                        width: 400,
                         child: Image.network(
                           widget.url,
                         ),
@@ -141,6 +146,46 @@ class _ComplaintDetailsState extends State<ComplaintDetails> {
                 ),
               ),
             ),
+            val ? InkWell(
+              child: Container(
+
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: [
+                      Color(0xFF17ead9),
+                      Color(0xFF6078ea)
+                    ]),
+                    borderRadius: BorderRadius.circular(6.0),
+                    boxShadow: [
+                      BoxShadow(
+                          color:
+                          Color(0xFF6078ea).withOpacity(.3),
+                          offset: Offset(0.0, 8.0),
+                          blurRadius: 8.0)
+                    ]),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+
+                    Navigator.push(
+                     context, MaterialPageRoute(builder: (context) => feedForm()));
+                    isfeed=true;
+
+                    },
+                    child: Center(
+                      child: Text("Give Feedback",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Poppins-Bold",
+                              fontSize: 18,
+                              letterSpacing: 1.0)),
+                    ),
+                  ),
+                ),
+              ),
+            ):Container(),
+
+            //isfeed?
           ],
         ),
       ),
